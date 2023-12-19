@@ -24,11 +24,14 @@ public class SonarGenericTestExecutionReportFormatter: ParsableCommand {
     @Option(help: "Where to store .xml with sonar test data. Using std if not presented.")
     public var outputPath: String?
     
+    @Flag
+    public var verbose: Bool = false
+    
     public func run() throws {
         let xcresultPath = URL(fileURLWithPath: xcresultPath)
         
         let report = try DBXCReportModel(xcresultPath: xcresultPath)
-        let result = try sonarTestReport(from: report)
+        let result = try sonarTestReport(from: report, verbose: verbose)
         
         if let outputPath {
             let outputPath = URL(fileURLWithPath: outputPath)
@@ -38,14 +41,14 @@ public class SonarGenericTestExecutionReportFormatter: ParsableCommand {
         }
     }
     
-    public func sonarTestReport(from report: DBXCReportModel) throws -> String {
+    public func sonarTestReport(from report: DBXCReportModel, verbose: Bool) throws -> String {
         let testsPath = URL(fileURLWithPath: testsPath)
         
         let sonarFiles = try report
             .modules
             .flatMap { $0.files }
             .sorted { $0.name < $1.name }
-            .concurrentMap { try testExecutions.file($0, testsPath: testsPath) }
+            .concurrentMap { try testExecutions.file($0, testsPath: testsPath, verbose: verbose) }
         
         let dto = testExecutions(file: sonarFiles)
         
@@ -121,7 +124,11 @@ extension testExecutions.file.testCase {
 }
 
 extension testExecutions.file {
-    init(_ file: DBXCReportModel.Module.File, testsPath: URL) throws {
+    init(_ file: DBXCReportModel.Module.File, testsPath: URL, verbose: Bool) throws {
+        if verbose {
+            print("Formatting \(file.name)")
+        }
+        
         let testCases = file.repeatableTests
             .sorted { $0.name < $1.name }
             .map { testExecutions.file.testCase.init($0) }
