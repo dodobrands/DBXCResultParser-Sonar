@@ -21,12 +21,21 @@ public class SonarGenericTestExecutionReportFormatter: ParsableCommand {
     @Option(help: "Path to folder with tests")
     public var testsPath: String
     
+    @Option(help: "Where to store .xml with sonar test data. Using std if not presented.")
+    public var outputPath: String?
+    
     public func run() throws {
         let xcresultPath = URL(fileURLWithPath: xcresultPath)
         
         let report = try DBXCReportModel(xcresultPath: xcresultPath)
         let result = try sonarTestReport(from: report)
-        print(result)
+        
+        if let outputPath {
+            let outputPath = URL(fileURLWithPath: outputPath)
+            try storeInFile(result, filePath: outputPath)
+        } else {
+            print(result)
+        }
     }
     
     public func sonarTestReport(from report: DBXCReportModel) throws -> String {
@@ -44,6 +53,10 @@ public class SonarGenericTestExecutionReportFormatter: ParsableCommand {
         encoder.outputFormatting = .prettyPrinted
         let data = try encoder.encode(dto)
         return String(decoding: data, as: UTF8.self)
+    }
+    
+    private func storeInFile(_ value: String, filePath: URL) throws {
+        try DBShell.execute("echo '\(value)' > \(filePath.relativePath)")
     }
 }
 
