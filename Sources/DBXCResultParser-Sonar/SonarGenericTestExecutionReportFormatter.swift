@@ -146,10 +146,17 @@ extension testExecutions.file {
         let command = "find \(testsPath) -name '*.swift' -exec grep -l 'class \(className)' {} + | head -n 1"
         let absoluteFilePath = try DBShell.execute(command)
         if absoluteFilePath.isEmpty {
-            print("Can't find file for class \(className)")
+            logWarning("Can't find file for class \(className)")
         }
         let relativeFilePath = absoluteFilePath.replacingOccurrences(of: testsPath, with: ".")
         return relativeFilePath
+    }
+    
+    static func logWarning(_ message: String) {
+        // Use ANSI escape codes for colored output in terminals that support it
+        // Yellow color for warnings: \u{001B}[33m
+        // Reset colors: \u{001B}[0m
+        print("\u{001B}[33mWarning:\u{001B}[0m \(message)")
     }
 }
 
