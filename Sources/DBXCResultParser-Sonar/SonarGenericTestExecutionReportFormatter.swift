@@ -28,27 +28,29 @@ public class SonarGenericTestExecutionReportFormatter: ParsableCommand {
     public var verbose: Bool = false
     
     public func run() throws {
+        DBLogger.verbose = verbose
+        
         let xcresultPath = URL(fileURLWithPath: xcresultPath)
         
         let report = try DBXCReportModel(xcresultPath: xcresultPath)
-        let result = try sonarTestReport(from: report, verbose: verbose)
+        let result = try sonarTestReport(from: report)
         
         if let outputPath {
             let outputPath = URL(fileURLWithPath: outputPath)
             try storeInFile(result, filePath: outputPath)
         } else {
-            print(result)
+            DBLogger.logInfo(result)
         }
     }
     
-    public func sonarTestReport(from report: DBXCReportModel, verbose: Bool = false) throws -> String {
+    public func sonarTestReport(from report: DBXCReportModel) throws -> String {
         let testsPath = URL(fileURLWithPath: testsPath)
         
         let sonarFiles = try report
             .modules
             .flatMap { $0.files }
             .sorted { $0.name < $1.name }
-            .concurrentMap { try testExecutions.file($0, testsPath: testsPath, verbose: verbose) }
+            .concurrentMap { try testExecutions.file($0, testsPath: testsPath) }
         
         let dto = testExecutions(file: sonarFiles)
         
@@ -124,10 +126,8 @@ extension testExecutions.file.testCase {
 }
 
 extension testExecutions.file {
-    init(_ file: DBXCReportModel.Module.File, testsPath: URL, verbose: Bool) throws {
-        if verbose {
-            print("Formatting \(file.name)")
-        }
+    init(_ file: DBXCReportModel.Module.File, testsPath: URL) throws {
+        DBLogger.logDebug("Formatting \(file.name)")
         
         let testCases = file.repeatableTests
             .sorted { $0.name < $1.name }
@@ -146,17 +146,10 @@ extension testExecutions.file {
         let command = "find \(testsPath) -name '*.swift' -exec grep -l 'class \(className)' {} + | head -n 1"
         let absoluteFilePath = try DBShell.execute(command)
         if absoluteFilePath.isEmpty {
-            logWarning("Can't find file for class \(className)")
+            DBLogger.logWarning("Can't find file for class \(className)")
         }
         let relativeFilePath = absoluteFilePath.replacingOccurrences(of: testsPath, with: ".")
         return relativeFilePath
-    }
-    
-    static func logWarning(_ message: String) {
-        // Use ANSI escape codes for colored output in terminals that support it
-        // Yellow color for warnings: \u{001B}[33m
-        // Reset colors: \u{001B}[0m
-        print("\u{001B}[33mWarning:\u{001B}[0m \(message)")
     }
 }
 
