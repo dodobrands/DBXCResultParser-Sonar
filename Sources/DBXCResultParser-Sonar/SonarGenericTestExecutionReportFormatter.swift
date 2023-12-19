@@ -143,9 +143,9 @@ extension testExecutions.file {
     
     private static func path(toFileWithClass className: String, in path: URL) throws -> String {
         let testsPath = path.relativePath
-        let command = "find \(testsPath) -name '*.swift' -exec grep -l '\(className)' {} + | head -n 1"
         let absouluteFilePath = try DBShell.execute(command)
         let relativeFilePath = absouluteFilePath.replacingOccurrences(of: testsPath, with: ".")
+        let command = "find \(testsPath) -name '*.swift' -exec grep -l 'class \(className)' {} + | head -n 1"
         return relativeFilePath
     }
 }
