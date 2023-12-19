@@ -41,7 +41,7 @@ public class SonarGenericTestExecutionReportFormatter: ParsableCommand {
         }
     }
     
-    public func sonarTestReport(from report: DBXCReportModel, verbose: Bool) throws -> String {
+    public func sonarTestReport(from report: DBXCReportModel, verbose: Bool = false) throws -> String {
         let testsPath = URL(fileURLWithPath: testsPath)
         
         let sonarFiles = try report
