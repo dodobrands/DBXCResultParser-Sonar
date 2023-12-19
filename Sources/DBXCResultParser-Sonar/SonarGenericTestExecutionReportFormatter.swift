@@ -143,9 +143,12 @@ extension testExecutions.file {
     
     private static func path(toFileWithClass className: String, in path: URL) throws -> String {
         let testsPath = path.relativePath
-        let absouluteFilePath = try DBShell.execute(command)
-        let relativeFilePath = absouluteFilePath.replacingOccurrences(of: testsPath, with: ".")
         let command = "find \(testsPath) -name '*.swift' -exec grep -l 'class \(className)' {} + | head -n 1"
+        let absoluteFilePath = try DBShell.execute(command)
+        if absoluteFilePath.isEmpty {
+            print("Can't find file for class \(className)")
+        }
+        let relativeFilePath = absoluteFilePath.replacingOccurrences(of: testsPath, with: ".")
         return relativeFilePath
     }
 }
