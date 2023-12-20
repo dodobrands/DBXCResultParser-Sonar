@@ -1,0 +1,57 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+
+name: Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  SCHEME: "DBXCResultParser-Sonar"
+  DESTINATION: "platform=OS X"
+
+jobs:
+  tests:
+
+    runs-on: 'macos-13'
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Prepare Environment for App Build
+      uses: ./.github/actions/prepare_env_app_build    
+
+    - name: Resolve Dependencies
+      run: >
+        xcodebuild -resolvePackageDependencies
+        -scheme ${{ env.SCHEME }}
+        -destination '${{ env.DESTINATION }}'
+        -quiet
+
+    - name: Build
+      run: >
+        xcodebuild build-for-testing
+        -scheme ${{ env.SCHEME }}
+        -destination '${{ env.DESTINATION }}'
+        -quiet
+
+    - name: Test
+      run: >
+        xcodebuild test-without-building
+        -scheme ${{ env.SCHEME }}
+        -destination '${{ env.DESTINATION }}'
+        -resultBundlePath ${{ env.SCHEME }}
+        -quiet
+
+    - name: Report
+      uses: kishikawakatsumi/xcresulttool@v1
+      with:
+        path: ${{ env.SCHEME }}.xcresult
+      if: success() || failure()
