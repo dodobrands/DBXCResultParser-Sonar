@@ -11,7 +11,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(
-            url: "git@github.com:dodobrands/DBXCResultParser",
+            url: "https://github.com/dodobrands/DBXCResultParser",
             .upToNextMajor(from: "3.0.0")
         ),
         .package(

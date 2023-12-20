@@ -12,7 +12,7 @@
     {
       "identity" : "dbxcresultparser",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:dodobrands/DBXCResultParser",
+      "location" : "https://github.com/dodobrands/DBXCResultParser",
       "state" : {
         "revision" : "7a2d3e8218604c9e831851bf97b252e515dd60a4",
         "version" : "3.0.0"
