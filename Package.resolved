@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dodobrands/DBThreadSafe-ios",
       "state" : {
-        "revision" : "337633bc73931a5a1cd528419048ce4169f00b00",
-        "version" : "2.0.0"
+        "revision" : "f0aacbe9f5373d507644814617f6df3fdb7522ac",
+        "version" : "2.1.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dodobrands/DBXCResultParser",
       "state" : {
-        "revision" : "7a2d3e8218604c9e831851bf97b252e515dd60a4",
-        "version" : "3.0.0"
+        "revision" : "3e14bcd027c291b49a7ef0105c0636be8c3bc102",
+        "version" : "3.1.0"
       }
     },
     {
