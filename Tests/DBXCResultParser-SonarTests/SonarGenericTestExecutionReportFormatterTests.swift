@@ -32,14 +32,15 @@ class SonarGenericTestExecutionReportFormatterTests: XCTestCase {
         XCTAssertEqual(result, """
 <testExecutions version="1">
     <file path="./ClassName_a_a.swift">
-        <testCase name="test_a" duration="0">
-            <failure />
+        <testCase name="test_expecting_fail" duration="0" />
+        <testCase name="test_failure" duration="0">
+            <failure message="Failure message" />
         </testCase>
-        <testCase name="test_b" duration="0" />
-        <testCase name="test_c" duration="0" />
-        <testCase name="test_d" duration="0">
-            <skipped />
+        <testCase name="test_mixedFailureAndSuccess" duration="0" />
+        <testCase name="test_skipped" duration="0">
+            <skipped message="Skip message" />
         </testCase>
+        <testCase name="test_success" duration="0" />
     </file>
     <file path="./ClassName_a_b.swift" />
     <file path="./ClassName_a_c.swift" />
@@ -73,10 +74,11 @@ extension DBXCReportModel {
                 .testMake(
                     name: "ClassName_a_a",
                     repeatableTests: [
-                        .failed(named: "test_a"),
-                        .succeeded(named: "test_b"),
-                        .mixedFailedSucceeded(named: "test_c"),
-                        .skipped(named: "test_d")
+                        .failed(named: "test_failure", message: "Failure message"),
+                        .succeeded(named: "test_success"),
+                        .mixedFailedSucceeded(named: "test_mixedFailureAndSuccess"),
+                        .skipped(named: "test_skipped", message: "Skip message"),
+                        .expectedFailed(named: "test_expecting_fail", message: "Failure message")
                     ]
                 ),
                 .testMake(

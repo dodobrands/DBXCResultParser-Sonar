@@ -108,8 +108,33 @@ fileprivate struct testExecutions: Encodable, DynamicNodeEncoding {
                 }
             }
             
-            struct skipped: Encodable { }
-            struct failure: Encodable { }
+            struct skipped: Encodable, DynamicNodeEncoding {
+                let message: String
+                
+                static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
+                    switch key {
+                    case
+                        Self.CodingKeys.message:
+                        return .attribute
+                    default:
+                        return .element
+                    }
+                }
+            }
+            
+            struct failure: Encodable, DynamicNodeEncoding {
+                let message: String
+                
+                static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
+                    switch key {
+                    case
+                        Self.CodingKeys.message:
+                        return .attribute
+                    default:
+                        return .element
+                    }
+                }
+            }
         }
     }
 }
@@ -119,8 +144,8 @@ extension testExecutions.file.testCase {
         self.init(
             name: test.name, 
             duration: Int(test.totalDuration.converted(to: .milliseconds).value),
-            skipped: test.combinedStatus == .skipped ? .init() : nil,
-            failure: test.combinedStatus == .failure ? .init() : nil
+            skipped: test.combinedStatus == .skipped ? .init(message: test.message ?? "Test message missing") : nil,
+            failure: test.combinedStatus == .failure ? .init(message: test.message ?? "Test message missing") : nil
         )
     }
 }
