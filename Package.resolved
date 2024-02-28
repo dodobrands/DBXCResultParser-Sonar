@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dodobrands/DBXCResultParser",
       "state" : {
-        "revision" : "3e14bcd027c291b49a7ef0105c0636be8c3bc102",
-        "version" : "3.1.0"
+        "revision" : "ebdeee5859634c1c84702dde2aaafb965beb856e",
+        "version" : "3.1.1"
       }
     },
     {
