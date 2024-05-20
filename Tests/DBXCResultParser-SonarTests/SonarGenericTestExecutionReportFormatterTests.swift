@@ -31,7 +31,7 @@ class SonarGenericTestExecutionReportFormatterTests: XCTestCase {
         let result = try formatter.sonarTestReport(from: report)
         XCTAssertEqual(result, """
 <testExecutions version="1">
-    <file path="./ClassName_a_a.swift">
+    <file path="ClassName_a_a.swift">
         <testCase name="test_expecting_fail" duration="0" />
         <testCase name="test_failure" duration="0">
             <failure message="Failure message" />
@@ -42,14 +42,14 @@ class SonarGenericTestExecutionReportFormatterTests: XCTestCase {
         </testCase>
         <testCase name="test_success" duration="0" />
     </file>
-    <file path="./ClassName_a_b.swift" />
-    <file path="./ClassName_a_c.swift" />
-    <file path="./ClassName_b_a.swift" />
-    <file path="./ClassName_b_b.swift" />
-    <file path="./ClassName_b_c.swift" />
-    <file path="./ClassName_c_a.swift" />
-    <file path="./ClassName_c_b.swift" />
-    <file path="./ClassName_c_c.swift" />
+    <file path="ClassName_a_b.swift" />
+    <file path="ClassName_a_c.swift" />
+    <file path="ClassName_b_a.swift" />
+    <file path="ClassName_b_b.swift" />
+    <file path="ClassName_b_c.swift" />
+    <file path="ClassName_c_a.swift" />
+    <file path="ClassName_c_b.swift" />
+    <file path="ClassName_c_c.swift" />
 </testExecutions>
 """
         )
