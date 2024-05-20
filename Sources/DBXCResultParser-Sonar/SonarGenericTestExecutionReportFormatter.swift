@@ -45,12 +45,13 @@ public class SonarGenericTestExecutionReportFormatter: ParsableCommand {
     
     public func sonarTestReport(from report: DBXCReportModel) throws -> String {
         let testsPath = URL(fileURLWithPath: testsPath)
+        let fsIndex = try FSIndex(path: testsPath)
         
         let sonarFiles = try report
             .modules
             .flatMap { $0.files }
             .sorted { $0.name < $1.name }
-            .concurrentMap { try testExecutions.file($0, testsPath: testsPath) }
+            .concurrentMap { try testExecutions.file($0, index: fsIndex) }
         
         let dto = testExecutions(file: sonarFiles)
         
@@ -151,14 +152,14 @@ extension testExecutions.file.testCase {
 }
 
 extension testExecutions.file {
-    init(_ file: DBXCReportModel.Module.File, testsPath: URL) throws {
+    init(_ file: DBXCReportModel.Module.File, index: FSIndex) throws {
         DBLogger.logDebug("Formatting \(file.name)")
         
         let testCases = file.repeatableTests
             .sorted { $0.name < $1.name }
             .map { testExecutions.file.testCase.init($0) }
         
-        let path = try Self.path(toFileWithClass: file.name, in: testsPath)
+        let path = try index.classes[file.name] ?! Error.missingFile(file.name)
         
         self.init(
             path: path,
@@ -166,15 +167,8 @@ extension testExecutions.file {
         )
     }
     
-    private static func path(toFileWithClass className: String, in path: URL) throws -> String {
-        let testsPath = path.relativePath
-        let command = "find \(testsPath) -name '*.swift' -exec grep -l 'class \(className)' {} + | head -n 1"
-        let absoluteFilePath = try DBShell.execute(command)
-        if absoluteFilePath.isEmpty {
-            DBLogger.logWarning("Can't find file for class \(className)")
-        }
-        let relativeFilePath = absoluteFilePath.replacingOccurrences(of: testsPath, with: ".")
-        return relativeFilePath
+    enum Error: Swift.Error {
+        case missingFile(String)
     }
 }
 
