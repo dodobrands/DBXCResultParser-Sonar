@@ -1,10 +1,3 @@
-//
-//  Logger.swift
-//  
-//
-//  Created by Aleksey Berezka on 19.12.2023.
-//
-
 import Foundation
 
 class DBLogger {

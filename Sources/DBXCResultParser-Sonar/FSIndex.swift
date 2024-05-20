@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Aleksey Berezka on 20.05.2024.
-//
-
 import Foundation
 
 struct FSIndex {

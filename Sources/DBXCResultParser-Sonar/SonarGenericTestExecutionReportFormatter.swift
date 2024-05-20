@@ -1,10 +1,3 @@
-//
-//  SonarGenericTestExecutionReportFormatter.swift
-//  
-//
-//  Created by Aleksey Berezka on 15.12.2023.
-//
-
 import Foundation
 import DBXCResultParser
 import XMLCoder
@@ -46,6 +39,7 @@ public class SonarGenericTestExecutionReportFormatter: ParsableCommand {
     public func sonarTestReport(from report: DBXCReportModel) throws -> String {
         let testsPath = URL(fileURLWithPath: testsPath)
         let fsIndex = try FSIndex(path: testsPath)
+        DBLogger.logDebug("Test classes: \(fsIndex.classes)")
         
         let sonarFiles = try report
             .modules
