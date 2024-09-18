@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dodobrands/DBXCResultParser",
       "state" : {
-        "revision" : "3fda06df35952f181f29d6947971e88c2733c457",
-        "version" : "3.1.2"
+        "revision" : "879b9f5e7de6f9dec1abd2e1557d5ae11136f003",
+        "version" : "3.1.3"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
       "state" : {
-        "revision" : "c8ed701b513cf5177118a175d85fbbbcd707ab41",
-        "version" : "1.3.0"
+        "revision" : "41982a3656a71c768319979febd796c6fd111d5c",
+        "version" : "1.5.0"
       }
     },
     {
